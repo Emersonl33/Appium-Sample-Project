@@ -4,8 +4,12 @@ import appiumcucumber.Utils;
 import appiumcucumber.kabum.pages.CartPage;
 import appiumcucumber.kabum.pages.HomePage;
 import io.appium.java_client.AppiumDriver;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebElement;
 
-public class AddProductToCartActions {
+import java.util.function.Supplier;
+
+public class AddProductToCartActions{
 
     HomePage homePage;
     CartPage cartPage;
@@ -25,24 +29,44 @@ public class AddProductToCartActions {
 
     public void searchProduct(String product){
         utils.waitForElement(homePage.searchBarInput);
-        homePage.searchBarInput.sendKeys(product);
-        utils.scrollDownUntilVisible(homePage.gpuProductLabel);
-        utils.waitForElement(homePage.gpuProductLabel);
-        productName = homePage.gpuProductLabel.getText();
+        homePage.searchBarInput.click();
+        utils.retrySendKeys(homePage.searchBarTextInput, product, homePage);
     }
 
-    public void addProductToCart(){
-        utils.waitForElement(homePage.addGpuProductButton);
+    public void addProductToCart(String product){
+        Supplier<WebElement> productLabelSupplier = () -> homePage.getProductLabel(product);
+        utils.scrollDownUntilVisible(productLabelSupplier);
+        utils.waitForElement(productLabelSupplier.get());
+        productName = homePage.getProductLabel(product).getText();
+        homePage.getProductLabel(product).click();
         homePage.addGpuProductButton.click();
     }
 
-    public void verifyCart(){
-        utils.scrollDownUntilVisible(homePage.cartMenuButton);
-        utils.waitForElement(homePage.cartMenuButton);
+    public void enterInCart(){
+        utils.refreshByPullDown();
         homePage.cartMenuButton.click();
+    }
 
-        utils.waitForElement(cartPage.descriptionProductLabel);
-        String productLabel = cartPage.descriptionProductLabel.getText();
+    public void verifyCart() {
+        String productLabel = null;
+        int maxAttempts = 3;
+        int attempt = 0;
+
+        while (attempt < maxAttempts) {
+            try {
+                WebElement label = cartPage.getDescriptionProductLabel();
+                utils.waitForElement(label);
+                productLabel = label.getText();
+                break;
+            } catch (StaleElementReferenceException e) {
+                System.out.println("🔄 Attempt " + (attempt + 1) + ": stale element, retrying...");
+                attempt++;
+                try { Thread.sleep(500); } catch (InterruptedException ignored) {}
+            }
+        }
+        if (productLabel == null) {
+            throw new RuntimeException("❌ Failed to retrieve the product description from the cart after all attempts.");
+        }
 
         if (productName == null || !productLabel.contains(productName)) {
             throw new AssertionError("🛑 Products in the cart do not match the product added.\nExpected: " + productName + "\nFound: " + productLabel);

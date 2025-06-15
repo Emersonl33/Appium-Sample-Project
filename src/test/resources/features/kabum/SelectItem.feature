@@ -7,5 +7,5 @@ Feature: Add item to shopping cart
   Scenario: Successfully add a product to the cart
     Given I am on the Kabum homepage
     And I search for "RTX 5070"
-    When I select the product desired from the results
+    When I select the product "Placa de Vídeo Gigabyte RTX 5070 AERO 12G NVIDIA GeForce, 12GB GDDR7, 192bits" from the results
     Then the product should be added to the shopping cart

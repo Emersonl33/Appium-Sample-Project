@@ -6,8 +6,6 @@ import io.cucumber.java.Before;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-
-
 public class Hooks {
 
     private final TestContext context;
