@@ -1,11 +1,17 @@
 package appiumcucumber.kabum.steps;
 
+import appiumcucumber.TestContext;
 import appiumcucumber.kabum.actions.AddProductToCartActions;
+
 import io.cucumber.java.en.*;
 
 public class AddProductToCartSteps {
 
-    AddProductToCartActions addProductToCartActions;
+    private final AddProductToCartActions addProductToCartActions;
+
+    public AddProductToCartSteps(TestContext context) {
+        this.addProductToCartActions = new AddProductToCartActions(context.getDriver());
+    }
 
     @Given("I am on the Kabum homepage")
     public void i_am_on_the_kabum_homepage() {

@@ -41,6 +41,13 @@
         </dependency>
 
         <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-picocontainer</artifactId>
+            <version>7.23.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
             <version>5.12.1</version>

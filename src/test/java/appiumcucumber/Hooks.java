@@ -6,22 +6,30 @@ import io.cucumber.java.Before;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+
+
 public class Hooks {
 
-    public static AppiumDriver driver;
+    private final TestContext context;
+
+    public Hooks(TestContext context) {
+        this.context = context;
+    }
 
     @Before
     public void startAppium() throws Exception {
-        AppiumBase appiumBase = new AppiumBase();
-        driver = appiumBase.setUpAppium();
-        log.info("Appium session started");
+        AppiumBase base = new AppiumBase();
+        AppiumDriver driver = base.setUpAppium();
+        context.setDriver(driver);
+        driver.manage().timeouts().implicitlyWait(java.time.Duration.ofSeconds(10));
     }
 
     @After
-    public void quitAppium(){
-        if(driver != null){
+    public void tearDown() {
+        AppiumDriver driver = context.getDriver();
+        if (driver != null) {
             driver.quit();
-            log.info("Appium session closed");
         }
     }
 }
+

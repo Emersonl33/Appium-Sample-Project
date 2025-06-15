@@ -11,8 +11,7 @@ import static io.cucumber.core.options.Constants.PLUGIN_PROPERTY_NAME;
 @Suite
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features")
-@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "steps")
+@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "appiumcucumber.kabum.steps")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty")
 public class CucumberTest {
-
 }
